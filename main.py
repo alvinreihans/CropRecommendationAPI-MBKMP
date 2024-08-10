@@ -6,7 +6,7 @@ import datetime
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.models import load_model
 
-with open("data-2.json") as data:
+with open("data.json") as data:
     jsondata = json.load(data)
 
 # Load the H5 model
