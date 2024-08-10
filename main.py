@@ -1,16 +1,23 @@
 from flask import Flask, jsonify, request
 import numpy as np
-import pickle
 import json
 import requests
 import datetime
+from sklearn.preprocessing import LabelEncoder
+from tensorflow.keras.models import load_model
 
-with open("data.json") as data:
+with open("data-2.json") as data:
     jsondata = json.load(data)
 
-model = pickle.load(open("model.pkl", "rb"))
+# Load the H5 model
+model = load_model("model.h5")
 
 app = Flask(__name__)
+
+
+@app.route("/")
+def main():
+    return jsonify({"message": "Connection success"})
 
 
 @app.route("/predict", methods=["POST"])
@@ -40,34 +47,23 @@ def predict():
     singl_pred = np.array(feature_list).reshape(1, -1)
 
     prediction = model.predict(singl_pred)
-    result = prediction[0]
+    result_index = np.argmax(prediction, axis=1)[0]
 
     crop_arr = [
-        "rice",
-        "maize",
-        "chickpea",
-        "kidneybeans",
-        "pigeonpeas",
-        "mothbeans",
-        "mungbean",
-        "blackgram",
-        "lentil",
-        "pomegranate",
-        "banana",
-        "mango",
-        "grapes",
-        "watermelon",
-        "muskmelon",
-        "apple",
-        "orange",
-        "papaya",
-        "coconut",
-        "cotton",
-        "jute",
-        "coffee",
+        "Arixtolochia acuminata",
+        "Cassia Fistula",
+        "Jengkol",
+        "Cinamomum verum",
+        "Klero Dendrum",
+        "Melicope Pteleifolia",
+        "Micromelum Minutum",
+        "Mussaenda Frondosa",
+        "Saga",
+        "Uvaria",
     ]
 
-    if result in crop_arr:
+    if result_index < len(crop_arr):
+        result = crop_arr[result_index]
         return jsonify(
             {
                 "crop": result,
