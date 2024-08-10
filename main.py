@@ -38,7 +38,7 @@ def predict():
             + "&appid=64dd867de5e5d328aa7ee8d45c5271ad"
         ).text
     )
-    temp = float(weather["main"]["temp"])
+    temp = (float(weather["main"]["temp"]) - 32) * 5 / 9
     humid = float(weather["main"]["humidity"])
     location = weather["name"]
     rainfall = jsondata["rainfall"][datetime.datetime.now().strftime("%m")]
@@ -70,6 +70,11 @@ def predict():
                 "description": jsondata["plant-description"][result]["description"],
                 "imageURL": jsondata["plant-description"][result]["imageURL"],
                 "location": location,
+                "temp": temp,
+                "humidity": humid,
+                "rainfall": rainfall,
+                "latitude": lat,
+                "longitude": lon,
             }
         )
     else:
